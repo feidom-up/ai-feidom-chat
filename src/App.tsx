@@ -3,10 +3,11 @@ import { ChatHeader, chatHeaderStyles } from './components/ChatHeader';
 import { MessageBubble, messageStyles } from './components/MessageBubble';
 import { ChatInput, chatInputStyles } from './components/ChatInput';
 import { LoadingIndicator, loadingStyles } from './components/LoadingIndicator';
+import { ConnectionStatus, connectionStatusStyles } from './components/ConnectionStatus';
 import { useChat } from './hooks/useChat';
 
 function App() {
-  const { messages, isLoading, error, sendMessage } = useChat();
+  const { messages, isLoading, error, sendMessage, isConnected, connectionStatus } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -19,10 +20,11 @@ function App() {
 
   return (
     <div className="app">
-      <style>{appStyles + chatHeaderStyles + messageStyles + chatInputStyles + loadingStyles}</style>
+      <style>{appStyles + chatHeaderStyles + messageStyles + chatInputStyles + loadingStyles + connectionStatusStyles}</style>
       
       <div className="chat-container">
         <ChatHeader />
+        <ConnectionStatus isConnected={isConnected} status={connectionStatus} />
         
         <div className="messages-container">
           <div className="messages-list">
@@ -35,7 +37,7 @@ function App() {
             {error && (
               <div className="error-message">
                 <div className="error-content">
-                  ❌ {error}
+                  {error}
                 </div>
               </div>
             )}
@@ -111,13 +113,15 @@ const appStyles = `
   }
   
   .error-content {
-    background: #f8d7da;
+    background: rgba(248, 215, 218, 0.9);
     color: #721c24;
     padding: 12px 16px;
     border-radius: 18px;
-    border: 1px solid #f5c6cb;
+    border: 1px solid rgba(245, 198, 203, 0.8);
     font-size: 14px;
     max-width: 70%;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   @media (max-width: 768px) {
@@ -132,6 +136,11 @@ const appStyles = `
     
     .message-bubble {
       max-width: 85%;
+    }
+    
+    .error-content {
+      max-width: 90%;
+      font-size: 13px;
     }
   }
 `;
