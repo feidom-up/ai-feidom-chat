@@ -1,5 +1,6 @@
 import React from 'react';
 import { Message } from '../types';
+import { MarkdownRenderer } from './MarkdownRenderer';
 
 interface MessageBubbleProps {
   message: Message;
@@ -12,7 +13,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
     <div className={`message-wrapper ${isUser ? 'user' : 'assistant'}`}>
       <div className={`message-bubble ${isUser ? 'user-bubble' : 'assistant-bubble'}`}>
         <div className="message-content">
-          {message.content}
+          {isUser ? (
+            // 用户消息显示为普通文本
+            message.content
+          ) : (
+            // AI 消息使用 Markdown 渲染
+            <MarkdownRenderer content={message.content} />
+          )}
         </div>
         <div className="message-time">
           {message.timestamp.toLocaleTimeString('zh-CN', { 
@@ -42,7 +49,7 @@ export const messageStyles = `
   }
   
   .message-bubble {
-    max-width: 70%;
+    max-width: 75%;
     padding: 12px 16px;
     border-radius: 18px;
     position: relative;
@@ -57,10 +64,11 @@ export const messageStyles = `
   }
   
   .assistant-bubble {
-    background: #f1f3f5;
+    background: #ffffff;
     color: #333;
     border-bottom-left-radius: 4px;
-    border: 1px solid #e9ecef;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
   
   .message-content {
@@ -69,14 +77,57 @@ export const messageStyles = `
     margin-bottom: 4px;
   }
   
+  .user-bubble .message-content {
+    color: white;
+  }
+  
+  .assistant-bubble .message-content {
+    color: #333;
+  }
+  
+  /* Markdown 内容在消息气泡中的样式调整 */
+  .assistant-bubble .markdown-content {
+    color: #333;
+  }
+  
+  .assistant-bubble .markdown-h1,
+  .assistant-bubble .markdown-h2,
+  .assistant-bubble .markdown-h3,
+  .assistant-bubble .markdown-h4 {
+    color: #2d3748;
+  }
+  
+  .assistant-bubble .markdown-h1 {
+    border-bottom-color: #667eea;
+  }
+  
+  .assistant-bubble .markdown-blockquote {
+    background: linear-gradient(90deg, #667eea15 0%, #764ba215 100%);
+    border-left-color: #667eea;
+  }
+  
+  .assistant-bubble .markdown-inline-code {
+    background: #f8f9fa;
+    border-color: #dee2e6;
+  }
+  
+  .assistant-bubble .markdown-table {
+    font-size: 0.9em;
+  }
+  
   .message-time {
     font-size: 11px;
     opacity: 0.7;
     text-align: right;
+    margin-top: 8px;
   }
   
   .assistant-bubble .message-time {
     color: #666;
+  }
+  
+  .user-bubble .message-time {
+    color: rgba(255, 255, 255, 0.8);
   }
   
   @keyframes fadeIn {
@@ -87,6 +138,22 @@ export const messageStyles = `
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+  
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .message-bubble {
+      max-width: 85%;
+      padding: 10px 14px;
+    }
+    
+    .message-content {
+      font-size: 14px;
+    }
+    
+    .assistant-bubble .markdown-table {
+      font-size: 0.8em;
     }
   }
 `;
