@@ -9,6 +9,14 @@ interface MarkdownRendererProps {
   className?: string;
 }
 
+// 为 code 组件定义自定义 props 类型
+interface CodeProps {
+  inline?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+  [key: string]: any;
+}
+
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ 
   content, 
   className = '' 
@@ -39,7 +47,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
           ),
           
           // 自定义代码块样式
-          code: ({ inline, className, children, ...props }) => {
+          code: ({ inline, className, children, ...props }: CodeProps) => {
             const match = /language-(\w+)/.exec(className || '');
             return !inline && match ? (
               <div className="markdown-code-block">
