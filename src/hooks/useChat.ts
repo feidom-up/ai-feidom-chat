@@ -1,10 +1,13 @@
 import { useState, useCallback } from 'react';
 import { Message, ChatState } from '../types';
 
+// 定义问题类型
+type QuestionType = 'code' | 'math' | 'explanation' | 'howto' | 'comparison' | 'recommendation' | 'creative' | 'general';
+
 // AI 回答生成器
 class AIResponseGenerator {
   // 检测问题类型
-  static detectQuestionType(input: string): string {
+  static detectQuestionType(input: string): QuestionType {
     const lowerInput = input.toLowerCase();
     
     if (lowerInput.includes('代码') || lowerInput.includes('编程') || lowerInput.includes('函数') || 
@@ -46,8 +49,8 @@ class AIResponseGenerator {
   }
 
   // 生成不同类型的回答
-  static generateResponse(input: string, type: string): string {
-    const responses = {
+  static generateResponse(input: string, type: QuestionType): string {
+    const responses: Record<QuestionType, string[]> = {
       code: [
         `## 💻 代码解决方案
 
@@ -497,7 +500,7 @@ y = f(x) 的图像特征:
       ]
     };
 
-    const typeResponses = responses[type] || responses.general;
+    const typeResponses = responses[type];
     return typeResponses[Math.floor(Math.random() * typeResponses.length)];
   }
 
@@ -513,10 +516,10 @@ y = f(x) 的图像特征:
   }
 
   // 生成个性化开头
-  static getPersonalizedIntro(input: string, type: string): string {
+  static getPersonalizedIntro(input: string, type: QuestionType): string {
     const inputPreview = input.length > 30 ? input.slice(0, 30) + "..." : input;
     
-    const intros = {
+    const intros: Record<QuestionType, string[]> = {
       code: [
         `关于您提到的"${inputPreview}"这个编程问题，`,
         `看到您在处理"${inputPreview}"相关的代码问题，`,
@@ -532,6 +535,26 @@ y = f(x) 的图像特征:
         `关于"${inputPreview}"这个话题，`,
         `针对您询问的"${inputPreview}"，`
       ],
+      howto: [
+        `关于您想知道如何"${inputPreview}"，`,
+        `看到您需要了解"${inputPreview}"的操作方法，`,
+        `针对您询问的"${inputPreview}"步骤，`
+      ],
+      comparison: [
+        `关于您提到的"${inputPreview}"对比问题，`,
+        `看到您需要比较"${inputPreview}"，`,
+        `针对您询问的"${inputPreview}"分析，`
+      ],
+      recommendation: [
+        `关于您寻求"${inputPreview}"的建议，`,
+        `看到您需要"${inputPreview}"方面的推荐，`,
+        `针对您询问的"${inputPreview}"选择，`
+      ],
+      creative: [
+        `关于您的创意想法"${inputPreview}"，`,
+        `看到您在思考"${inputPreview}"的创新方案，`,
+        `针对您提出的"${inputPreview}"设计思路，`
+      ],
       general: [
         `关于您提到的"${inputPreview}"，`,
         `看到您的问题"${inputPreview}"，`,
@@ -539,7 +562,7 @@ y = f(x) 的图像特征:
       ]
     };
 
-    const typeIntros = intros[type] || intros.general;
+    const typeIntros = intros[type];
     return typeIntros[Math.floor(Math.random() * typeIntros.length)];
   }
 }
