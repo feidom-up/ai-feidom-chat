@@ -3,11 +3,11 @@ import { ChatHeader, chatHeaderStyles } from './components/ChatHeader';
 import { MessageBubble, messageStyles } from './components/MessageBubble';
 import { ChatInput, chatInputStyles } from './components/ChatInput';
 import { LoadingIndicator, loadingStyles } from './components/LoadingIndicator';
-import { ConnectionStatus, connectionStatusStyles } from './components/ConnectionStatus';
+import { markdownStyles } from './components/MarkdownRenderer';
 import { useChat } from './hooks/useChat';
 
 function App() {
-  const { messages, isLoading, error, sendMessage, isConnected, connectionStatus } = useChat();
+  const { messages, isLoading, error, sendMessage } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -20,11 +20,10 @@ function App() {
 
   return (
     <div className="app">
-      <style>{appStyles + chatHeaderStyles + messageStyles + chatInputStyles + loadingStyles + connectionStatusStyles}</style>
+      <style>{appStyles + chatHeaderStyles + messageStyles + chatInputStyles + loadingStyles + markdownStyles}</style>
       
       <div className="chat-container">
         <ChatHeader />
-        <ConnectionStatus isConnected={isConnected} status={connectionStatus} />
         
         <div className="messages-container">
           <div className="messages-list">
@@ -37,7 +36,7 @@ function App() {
             {error && (
               <div className="error-message">
                 <div className="error-content">
-                  {error}
+                  ❌ {error}
                 </div>
               </div>
             )}
@@ -64,7 +63,7 @@ const appStyles = `
   
   .chat-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 900px;
     height: 90vh;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
@@ -132,6 +131,7 @@ const appStyles = `
     .chat-container {
       height: 95vh;
       border-radius: 15px;
+      max-width: 100%;
     }
     
     .message-bubble {
