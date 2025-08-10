@@ -1,28 +1,63 @@
 # AI Feidom Chat
 
-一个使用 TypeScript 和 React 构建的现代化 AI 聊天应用，集成了真实的 OpenAI GPT 模型。
+一个使用 TypeScript 和 React 构建的现代化 AI 聊天应用，支持 **Markdown 渲染**。
 
 ## 🌟 功能特点
 
-- 🤖 **真实 AI 聊天**: 集成 OpenAI GPT 模型，支持真实的智能对话
+- 🤖 智能聊天界面
 - 💬 实时消息显示
+- 📝 **Markdown 格式支持** - AI 回复支持丰富的 Markdown 格式
 - 🎨 现代化 UI 设计
 - 📱 响应式布局
 - ⚡ TypeScript 支持
 - 🔄 消息加载动画
 - 🎭 渐变背景和玻璃态效果
-- 🔗 **GraphQL API**: 使用 GraphQL 接口与 Cloudflare Worker 通信
-- 🌐 **连接状态显示**: 实时显示与 AI 服务的连接状态
-- 📊 **Token 使用统计**: 显示 API 使用情况（控制台）
+- 🌈 语法高亮代码块
+- 📊 表格和列表支持
+
+## 📝 Markdown 功能展示
+
+AI 回复支持以下 Markdown 格式：
+
+### 🔤 文本格式
+- **粗体文本** - `**粗体**`
+- *斜体文本* - `*斜体*`
+- `行内代码` - `` `代码` ``
+
+### 📋 结构化内容
+- # 一级标题
+- ## 二级标题
+- ### 三级标题
+- 有序列表和无序列表
+- > 引用块
+- 表格支持
+
+### 💻 代码块
+```javascript
+function example() {
+  console.log("支持语法高亮的代码块");
+}
+```
+
+### 🎯 特殊功能
+- ✅ 任务列表
+- 🔗 链接支持
+- 📊 表格渲染
+- 🎨 自定义样式
 
 ## 🛠️ 技术栈
 
 - **Frontend**: React 18
 - **Language**: TypeScript
 - **Icons**: Lucide React
+- **Markdown**: React-Markdown + 插件
 - **Styling**: CSS-in-JS
-- **API**: GraphQL + Cloudflare Workers
-- **AI**: OpenAI GPT Models
+
+### Markdown 相关依赖
+- `react-markdown` - Markdown 渲染
+- `remark-gfm` - GitHub 风格 Markdown 支持
+- `rehype-highlight` - 代码语法高亮
+- `rehype-raw` - HTML 标签支持
 
 ## 🚀 快速开始
 
@@ -37,15 +72,6 @@ cd ai-feidom-chat
 npm install
 ```
 
-### 环境配置
-```bash
-# 复制环境变量文件
-cp .env.example .env
-
-# 编辑 .env 文件，配置 GraphQL 端点
-REACT_APP_GRAPHQL_ENDPOINT=https://ai-feidom-graphql-worker.bcq9529.workers.dev/graphql
-```
-
 ### 开发模式
 ```bash
 npm start
@@ -58,32 +84,30 @@ npm start
 npm run build
 ```
 
-构建文件将输出到 `build` 文件夹。
+**构建命令**: `npm run build`  
+**输出目录**: `build/`
 
 ## 📁 项目结构
 
 ```
 ai-feidom-chat/
 ├── public/
-│   └── index.html          # HTML 模板
+│   └── index.html              # HTML 模板
 ├── src/
-│   ├── components/         # React 组件
-│   │   ├── ChatHeader.tsx  # 聊天头部组件
-│   │   ├── MessageBubble.tsx # 消息气泡组件
-│   │   ├── ChatInput.tsx   # 输入框组件
+│   ├── components/             # React 组件
+│   │   ├── ChatHeader.tsx      # 聊天头部组件
+│   │   ├── MessageBubble.tsx   # 消息气泡组件（支持 Markdown）
+│   │   ├── ChatInput.tsx       # 输入框组件
 │   │   ├── LoadingIndicator.tsx # 加载指示器
-│   │   └── ConnectionStatus.tsx # 连接状态组件
-│   ├── hooks/              # 自定义 Hooks
-│   │   └── useChat.ts      # 聊天逻辑 Hook（集成真实 AI）
-│   ├── services/           # API 服务
-│   │   └── graphqlChatService.ts # GraphQL API 服务
-│   ├── types.ts            # TypeScript 类型定义
-│   ├── App.tsx             # 主应用组件
-│   └── index.tsx           # 应用入口
-├── package.json            # 项目配置
-├── tsconfig.json           # TypeScript 配置
-├── .env.example            # 环境变量示例
-└── README.md               # 项目说明
+│   │   └── MarkdownRenderer.tsx # Markdown 渲染组件 ✨
+│   ├── hooks/                  # 自定义 Hooks
+│   │   └── useChat.ts          # 聊天逻辑 Hook（包含 Markdown 回复）
+│   ├── types.ts                # TypeScript 类型定义
+│   ├── App.tsx                 # 主应用组件
+│   └── index.tsx               # 应用入口
+├── package.json                # 项目配置（包含 Markdown 依赖）
+├── tsconfig.json               # TypeScript 配置
+└── README.md                   # 项目说明
 ```
 
 ## 🔧 组件说明
@@ -91,8 +115,20 @@ ai-feidom-chat/
 ### ChatHeader
 聊天界面的头部组件，显示应用标题、状态指示器等。
 
-### MessageBubble
-消息气泡组件，支持用户和AI消息的不同样式显示。
+### MessageBubble ✨
+消息气泡组件，支持：
+- 用户消息：普通文本显示
+- AI 消息：**Markdown 格式渲染**
+- 时间戳显示
+- 响应式设计
+
+### MarkdownRenderer ✨
+专门的 Markdown 渲染组件，支持：
+- GitHub 风格的 Markdown
+- 语法高亮代码块
+- 表格渲染
+- 自定义样式主题
+- 安全的 HTML 渲染
 
 ### ChatInput
 消息输入组件，支持：
@@ -104,54 +140,41 @@ ai-feidom-chat/
 ### LoadingIndicator
 加载动画组件，在AI思考时显示动态效果。
 
-### ConnectionStatus
-连接状态组件，显示与 AI 服务的实时连接状态：
-- ✅ 已连接：绿色指示器
-- ❌ 连接失败：红色指示器
-- 详细状态信息
-
-### useChat Hook
+### useChat Hook ✨
 自定义Hook，管理聊天状态：
 - 消息列表管理
-- 真实 AI API 调用
+- **智能 Markdown 回复生成**
 - 加载状态控制
 - 错误处理
-- 连接状态监控
 
-### GraphQL Chat Service
-GraphQL API 服务类，负责：
-- 与 Cloudflare Worker 通信
-- 处理聊天请求和响应
-- 错误处理和重试逻辑
-- 健康检查
+## ⚙️ Markdown 配置
 
-## ⚙️ AI 配置
-
-### 支持的模型
-- `gpt-3.5-turbo` (默认)
-- `gpt-4`
-- 其他 OpenAI 模型
-
-### 可调参数
-- `temperature`: 随机性控制 (0-2)
-- `max_tokens`: 最大生成 token 数
-- `top_p`: 核心采样 (0-1)
-- `frequency_penalty`: 频率惩罚 (-2 到 2)
-- `presence_penalty`: 存在惩罚 (-2 到 2)
-
-### 修改 AI 参数
-在 `src/hooks/useChat.ts` 中的 `sendMessage` 函数里修改：
+### 自定义 AI 回复
+在 `src/hooks/useChat.ts` 中，AI 回复包含丰富的 Markdown 格式：
 
 ```typescript
-const response = await graphqlChatService.sendChatMessage(graphqlMessages, {
-  model: 'gpt-4', // 改为 GPT-4
-  temperature: 0.8, // 提高创造性
-  max_tokens: 2000, // 增加输出长度
-  top_p: 0.9,
-  frequency_penalty: 0.1,
-  presence_penalty: 0.1
-});
+const responses = [
+  `## 📚 关于您的问题
+
+这是一个**很有趣**的问题！让我来为您详细解答：
+
+### 主要观点
+1. 首先，我们需要理解问题的本质
+2. 然后分析可能的解决方案
+3. 最后提供具体的建议
+
+> 💡 **提示**: 如果您需要更详细的解释，请随时告诉我！`,
+  // 更多 Markdown 格式的回复...
+];
 ```
+
+### 样式定制
+Markdown 渲染器支持完全自定义的样式：
+- `markdownStyles` - 完整的 Markdown 样式
+- 代码块高亮主题
+- 表格样式
+- 引用块样式
+- 响应式设计
 
 ## 🌐 部署
 
@@ -162,22 +185,24 @@ npm run build
 ```
 
 ### Vercel
-1. 连接 GitHub 仓库
-2. 设置环境变量 `REACT_APP_GRAPHQL_ENDPOINT`
-3. 自动部署
+```bash
+# 构建命令: npm run build
+# 输出目录: build
+```
 
 ### Netlify
-1. 连接 GitHub 仓库
-2. 设置环境变量
-3. 自动部署
+```bash
+# 构建命令: npm run build
+# 发布目录: build
+```
 
 ## 📦 在本地 projects 文件夹运行
 
 ### 方法一：Git 克隆（推荐）
 ```bash
 # 进入 projects 目录
-cd ~/projects
-# 或 cd C:\projects (Windows)
+cd ~/projects           # macOS/Linux
+# 或 cd C:\projects     # Windows
 
 # 克隆项目
 git clone https://github.com/feidom-up/ai-feidom-chat.git
@@ -187,9 +212,6 @@ cd ai-feidom-chat
 
 # 安装依赖
 npm install
-
-# 配置环境变量
-cp .env.example .env
 
 # 启动项目
 npm start
@@ -202,56 +224,30 @@ npm start
 4. 解压到 projects 文件夹
 5. 在项目目录中运行 `npm install` 和 `npm start`
 
-## 🔍 故障排除
+## 🎯 Markdown 功能演示
 
-### 常见问题
+AI 可以回复包含以下格式的内容：
 
-#### 1. 连接失败
-- **症状**: 连接状态显示红色 ❌
-- **解决方案**: 
-  - 检查网络连接
-  - 确认 GraphQL 端点 URL 正确
-  - 检查 Cloudflare Worker 是否正常运行
-
-#### 2. API Key 错误
-- **症状**: 错误信息显示 "OpenAI API key is not configured"
-- **解决方案**: 
-  - 确认 Cloudflare Worker 已配置 OpenAI API Key
-  - 运行 `wrangler secret put OPENAI_API_KEY`
-
-#### 3. 网络超时
-- **症状**: 请求长时间无响应
-- **解决方案**: 
-  - 检查网络连接
-  - 尝试刷新页面
-  - 检查防火墙设置
-
-### 调试模式
-打开浏览器开发者工具查看：
-- 控制台日志
-- 网络请求
-- Token 使用统计
-
-## 🎯 功能演示
-
-- **真实 AI 对话**: 基于 OpenAI GPT 模型的智能回复
-- **流畅交互**: GraphQL 接口确保快速响应
-- **连接监控**: 实时显示服务连接状态
-- **错误处理**: 友好的错误提示和恢复机制
-- **响应式设计**: 适配手机、平板、桌面设备
+1. **结构化文档** - 标题、段落、列表
+2. **代码示例** - 语法高亮的代码块
+3. **数据表格** - 格式化的数据展示
+4. **引用说明** - 突出显示的重要信息
+5. **任务列表** - 可交互的清单
+6. **链接资源** - 外部资源引用
 
 ## 🔮 未来计划
 
-- [x] 连接真实 AI API（OpenAI GPT）
-- [x] GraphQL API 集成
-- [x] 连接状态监控
+- [ ] 连接真实 AI API（OpenAI、Claude 等）
 - [ ] 添加用户认证系统
 - [ ] 实现聊天历史保存
 - [ ] 支持文件上传功能
 - [ ] 添加语音输入输出
 - [ ] 多主题切换功能
 - [ ] 多语言支持
-- [ ] 流式响应支持
+- [x] **Markdown 渲染支持** ✅
+- [ ] LaTeX 数学公式支持
+- [ ] 图片和媒体文件展示
+- [ ] 消息搜索功能
 
 ## 🤝 贡献
 
@@ -268,10 +264,6 @@ npm start
 
 MIT License - 详见 [LICENSE](LICENSE) 文件
 
-## 🔗 相关项目
-
-- [AI Feidom GraphQL Worker](https://github.com/feidom-up/ai-feidom-graphl-worker) - 后端 GraphQL API 服务
-
 ## 📞 联系方式
 
 如有问题或建议，请通过以下方式联系：
@@ -281,3 +273,5 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 ---
 
 ⭐ 如果这个项目对您有帮助，请给个 Star 支持一下！
+
+🎉 **特别亮点**: 支持完整的 Markdown 渲染，让 AI 回复更加丰富和专业！
