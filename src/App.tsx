@@ -4,6 +4,7 @@ import { MessageBubble, messageStyles } from './components/MessageBubble';
 import { ChatInput, chatInputStyles } from './components/ChatInput';
 import { LoadingIndicator, loadingStyles } from './components/LoadingIndicator';
 import { markdownStyles } from './components/MarkdownRenderer';
+import { agentMessageStyles } from './components/AgentMessage';
 import { useChat } from './hooks/useChat';
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
 
   return (
     <div className="app">
-      <style>{appStyles + chatHeaderStyles + messageStyles + chatInputStyles + loadingStyles + markdownStyles}</style>
+      <style>{appStyles + chatHeaderStyles + messageStyles + chatInputStyles + loadingStyles + markdownStyles + agentMessageStyles}</style>
       
       <div className="chat-container">
         <ChatHeader />

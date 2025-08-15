@@ -1,6 +1,7 @@
 import React from 'react';
 import { Message } from '../types';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { AgentMessage } from './AgentMessage';
 
 interface MessageBubbleProps {
   message: Message;
@@ -8,6 +9,18 @@ interface MessageBubbleProps {
 
 export const MessageBubble: React.FC<MessageBubbleProps> = ({ message }) => {
   const isUser = message.role === 'user';
+  const isAgent = message.role === 'agent';
+  
+  // 如果是Agent消息，使用专门的Agent组件
+  if (isAgent && message.agentResponse && message.agentType) {
+    return (
+      <AgentMessage 
+        agentResponse={message.agentResponse}
+        agentType={message.agentType}
+        timestamp={message.timestamp}
+      />
+    );
+  }
   
   return (
     <div className={`message-wrapper ${isUser ? 'user' : 'assistant'}`}>

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Message, ChatState } from '../types';
 import { graphqlChatService, GraphQLMessage } from '../services/graphqlChatService';
+import { agentService } from '../services/agents/agentService';
 
 // 智能回复生成器
 class SmartResponseGenerator {
@@ -187,23 +188,36 @@ export const useChat = (): ChatState & { sendMessage: (content: string) => Promi
       id: '1',
       content: `# 👋 你好！我是 AI Feidom 
 
-## 🌟 我已经升级啦！
+## 🌟 我已经全面升级！
 
-现在我可以：
-- **🧠 更好地理解你的问题**
-- **💬 给出更贴合你需求的回复**  
-- **📝 保持优雅的 Markdown 格式**
+现在我拥有多种专业能力：
+- **🧠 智能对话** - 更好地理解你的问题
+- **📝 文档分析** - 专业的文档和网页分析Agent
+- **🌤️ 天气查询** - 实时天气信息Agent  
+- **💬 Markdown格式** - 优雅的回复展示
 
-### 💡 试试问我：
-- 具体的问题或需要建议
-- 想聊的任何话题
-- 需要帮助的事情
+### 🤖 专业Agent功能
 
-**我会认真理解你说的每一句话，并给出有用的回复！**
+#### 📄 文档分析Agent
+- 发送任何网址，我会自动分析内容
+- 例如：\`https://example.com\`
+- 关键词：\`分析文档\`、\`网站分析\`
+
+#### ☁️ 天气Agent  
+- 询问任何地方的天气
+- 例如：\`北京天气如何？\`
+- 关键词：\`天气\`、\`气温\`、\`温度\`
+
+### 💡 试试这些：
+- 贴一个网址让我分析
+- 问问今天的天气
+- 或者随便聊聊任何话题
+
+**我会自动识别你的需求，调用最合适的Agent为你服务！**
 
 ---
 
-> 💭 **那么，今天有什么想聊的吗？**`,
+> 💭 **那么，今天有什么想要了解的吗？**`,
       role: 'assistant',
       timestamp: new Date()
     }
@@ -226,6 +240,33 @@ export const useChat = (): ChatState & { sendMessage: (content: string) => Promi
     setError(null);
 
     try {
+      // 首先检测是否可以使用Agent处理
+      const agentType = agentService.detectAgentType(content);
+      
+      if (agentType) {
+        // 使用Agent处理
+        console.log(`检测到${agentType}请求，调用相应Agent...`);
+        
+        const agentResponse = await agentService.smartCall(content);
+        
+        if (agentResponse) {
+          const agentMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            content: agentResponse.text,
+            role: 'agent',
+            timestamp: new Date(),
+            agentResponse: agentResponse,
+            agentType: agentType
+          };
+          
+          setMessages(prev => [...prev, agentMessage]);
+          return;
+        }
+      }
+
+      // 如果Agent无法处理，则回退到常规AI聊天
+      console.log('使用常规AI聊天处理...');
+      
       // 准备消息历史
       const conversationHistory: GraphQLMessage[] = [
         {
@@ -234,7 +275,7 @@ export const useChat = (): ChatState & { sendMessage: (content: string) => Promi
         },
         // 包含最近3条对话作为上下文
         ...messages.slice(-6).map(msg => ({
-          role: msg.role as 'user' | 'assistant',
+          role: msg.role === 'agent' ? 'assistant' : msg.role as 'user' | 'assistant',
           content: msg.content
         })),
         {
